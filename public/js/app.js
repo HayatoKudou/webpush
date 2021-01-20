@@ -1840,7 +1840,20 @@ module.exports = {
   \*****************************/
 /***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
 
+/**
+ * First we will load all of this project's JavaScript dependencies which
+ * includes React and other helpers. It's a great starting point while
+ * building robust, powerful web applications using React + Laravel.
+ */
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
+/**
+ * Next, we will create a fresh React component instance and attach it to
+ * the page. Then, you may begin adding components to this application
+ * or customize the JavaScript scaffolding to fit your unique needs.
+ */
+
+
+__webpack_require__(/*! ./components/Example */ "./resources/js/components/Example.js");
 
 __webpack_require__(/*! ./components/webpush */ "./resources/js/components/webpush.js");
 
@@ -1890,6 +1903,106 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 /***/ }),
 
+/***/ "./resources/js/components/Example.js":
+/*!********************************************!*\
+  !*** ./resources/js/components/Example.js ***!
+  \********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => __WEBPACK_DEFAULT_EXPORT__
+/* harmony export */ });
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
+
+
+
+
+
+function Example() {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", {
+    className: "container",
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", {
+      className: "row justify-content-center",
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", {
+        className: "col-md-8",
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+          className: "card",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", {
+            className: "card-header",
+            children: "Example Component"
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", {
+            className: "card-body",
+            children: "I'm an example component!"
+          })]
+        })
+      })
+    })
+  });
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Example);
+
+if (document.getElementById('example')) {
+  react_dom__WEBPACK_IMPORTED_MODULE_2__.render( /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(Example, {}), document.getElementById('example'));
+}
+
+/***/ }),
+
+/***/ "./resources/js/components/pushbutton.js":
+/*!***********************************************!*\
+  !*** ./resources/js/components/pushbutton.js ***!
+  \***********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => /* binding */ PushButton
+/* harmony export */ });
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
+
+
+
+function PushButton() {
+  var csrf_token = document.head.querySelector('meta[name="csrf-token"]').content;
+  var vapidPublicKey = document.head.querySelector('meta[name="vapidPublicKey"]').content;
+  var options = {
+    applicationServerKey: vapidPublicKey,
+    csrfToken: csrf_token
+  };
+
+  function push_test() {
+    fetch('/push_test', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'X-CSRF-Token': csrf_token
+      }
+    }).then(function (response) {// alert('プッシュ通知しました');
+    })["catch"](function (error) {
+      console.log(error);
+    });
+  }
+
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", {
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("button", {
+      onClick: function onClick() {
+        return push_test();
+      },
+      children: "push_test"
+    })
+  });
+}
+
+/***/ }),
+
 /***/ "./resources/js/components/webpush.js":
 /*!********************************************!*\
   !*** ./resources/js/components/webpush.js ***!
@@ -1904,47 +2017,120 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
+/* harmony import */ var _pushbutton__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./pushbutton */ "./resources/js/components/pushbutton.js");
+
 
 
 
 function Webpush() {
-  function setPush() {
-    var csrf_token = document.head.querySelector('meta[name="csrf-token"]').content;
-    var vapidPublicKey = document.head.querySelector('meta[name="vapidPublicKey"]').content;
+  // サービスワーカーが使えない系では何もしない
+  if ('serviceWorker' in navigator) {
+    console.log('service worker サポート対象'); // サービスワーカーとして、public/sw.js を登録する
+
+    navigator.serviceWorker.register('sw.js').then(function (swReg) {
+      console.log('Service Worker is registered', swReg);
+      initialiseServiceWorker();
+    })["catch"](function (error) {
+      console.error('Service Worker Error', error);
+    });
+  } else {
+    console.log('service worker サポート対象外');
+  }
+  /** 
+   * サービスワーカーを初期化する
+   * 初期化では、プッシュ通知用の情報をサーバに送ることになる
+   */
+
+
+  function initialiseServiceWorker() {
+    if (!('showNotification' in ServiceWorkerRegistration.prototype)) {
+      console.log('cant use notification');
+      return;
+    }
+
+    if (Notification.permission === 'denied') {
+      console.log('user block notification');
+      return;
+    }
+
+    if (!('PushManager' in window)) {
+      consoleo.log('push messaging not supported');
+      return;
+    } // プッシュ通知使えるので
+
+
+    navigator.serviceWorker.ready.then(function (registration) {
+      console.log(registration);
+      registration.pushManager.getSubscription().then(function (subscription) {
+        if (!subscription) {
+          subscribe(registration);
+        }
+      });
+    });
+  }
+  /** 
+   * サーバに自身の情報を送付し、プッシュ通知を送れるようにする
+   */
+
+
+  function subscribe(registration) {
     var options = {
-      // applicationServerKey: base64ToUint8(vapidPublicKey),
-      applicationServerKey: vapidPublicKey
+      userVisibleOnly: true
     };
-    console.log(vapidPublicKey);
-    console.log(csrf_token);
-    fetch('/web_push', {
+    var vapidPublicKey = document.head.querySelector('meta[name="vapidPublicKey"]').content;
+
+    if (vapidPublicKey) {
+      options.applicationServerKey = urlBase64ToUint8Array(vapidPublicKey);
+    }
+
+    registration.pushManager.subscribe(options).then(function (subscription) {
+      updateSubscription(subscription);
+    });
+  }
+  /** 
+   * 購読情報を更新する
+   *
+   */
+
+
+  function updateSubscription(subscription) {
+    var key = subscription.getKey('p256dh');
+    var token = subscription.getKey('auth');
+    var data = new FormData();
+    data.append('endpoint', subscription.endpoint);
+    data.append('key', key ? btoa(String.fromCharCode.apply(null, new Uint8Array(key))) : null), data.append('token', token ? btoa(String.fromCharCode.apply(null, new Uint8Array(token))) : null);
+    var csrf_token = document.head.querySelector('meta[name="csrf-token"]').content; // サーバに通信し、endpointを渡す
+
+    fetch('/push_user_register', {
       method: 'POST',
-      body: JSON.stringify(options),
+      body: data,
       headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
         'X-CSRF-Token': csrf_token
       }
-    }).then(function (response) {
-      alert('プッシュ通知が登録されました');
-    })["catch"](function (error) {
-      console.log(error);
+    }).then(function () {
+      return console.log('Subscription ended');
     });
   }
 
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", {
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("button", {
-      onClick: function onClick() {
-        return setPush();
-      },
-      children: "set psuh"
-    })
-  });
-}
-console.log('test');
+  function urlBase64ToUint8Array(base64String) {
+    var padding = '='.repeat((4 - base64String.length % 4) % 4);
+    var base64 = (base64String + padding).replace(/\-/g, '+').replace(/_/g, '/');
+    console.log(base64);
+    var rawData = window.atob(base64);
+    var outputArray = new Uint8Array(rawData.length);
 
-if (document.getElementById('root')) {
-  react_dom__WEBPACK_IMPORTED_MODULE_2__.render( /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(Webpush, {}), document.getElementById('root'));
+    for (var i = 0; i < rawData.length; ++i) {
+      outputArray[i] = rawData.charCodeAt(i);
+    }
+
+    return outputArray;
+  }
+
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_pushbutton__WEBPACK_IMPORTED_MODULE_3__.default, {});
+}
+
+if (document.getElementById('webpush')) {
+  react_dom__WEBPACK_IMPORTED_MODULE_2__.render( /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(Webpush, {}), document.getElementById('webpush'));
 }
 
 /***/ }),

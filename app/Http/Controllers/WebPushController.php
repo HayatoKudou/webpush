@@ -4,36 +4,29 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Log;
+use App\Notifications\EventAdded;
 
 class WebPushController extends Controller
 {
-    public function test() {
-        return view('create');
+    public function __construct() {
+        $this->middleware('auth');  // 要ログイン
     }
 
-    public function create() {
-        return view('web_push');
-    }
-
-    public function store(Request $request) {
-        Log::debug('$request');
-        Log::debug($request);
-        // $this->validate($request, [
-        //     'endpoint'    => 'required',
-        //     'keys.auth'   => 'required',
-        //     'keys.p256dh' => 'required'
-        // ]);
-
+    public function subscription(Request $request)
+    {
+        $user = \Auth::user();
         $endpoint = $request->endpoint;
-        // $token = $request->keys['auth'];
-        // $key = $request->keys['p256dh'];
-        $token = 'token_test';
-        $key = 'key_test';
-        $user = $request->user();
+        $key = $request->key;
+        $token = $request->token;
         $user->updatePushSubscription($endpoint, $key, $token);
 
-        return response()->json([
-            'success' => true
-        ], 200);
+        return ['result' => true];
+    }
+
+    public function push_test(){
+        $users = \App\User::all();
+        foreach ($users as $user) {
+            $user->notify(new EventAdded);
+        }
     }
 }

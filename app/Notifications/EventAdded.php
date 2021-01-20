@@ -42,7 +42,7 @@ class EventAdded extends Notification
      * @param  mixed  $notifiable
      * @return \Illuminate\Notifications\Messages\MailMessage
      */
-    public function toMail($notifiable)
+    public function toWebPush($notifiable)
     {
         return (new WebPushMessage)
             ->title('Approved!')

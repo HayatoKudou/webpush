@@ -5,7 +5,7 @@ self.addEventListener('push', e => {    // プッシュ通知された時
     const options = {
         body: json.body,
         data: {
-            url: json.data.url,
+            // url: json.data.url,
         }
     };
     e.waitUntil(

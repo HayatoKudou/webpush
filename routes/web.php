@@ -13,10 +13,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Auth::routes();
+
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('test', 'App\Http\Controllers\WebPushController@test');
-Route::get('web_push/create', 'App\Http\Controllers\WebPushController@create');
-Route::post('web_push', 'App\Http\Controllers\WebPushController@store');
+Route::get('home', 'App\Http\Controllers\HomeController@index');
+
+Route::post('/push_user_register', 'App\Http\Controllers\WebPushController@subscription')->name('subscription');
+Route::post('/push_test', 'App\Http\Controllers\WebPushController@push_test')->name('push_test');
